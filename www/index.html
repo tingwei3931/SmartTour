@@ -37,28 +37,29 @@
   <script src="lib/ionicuirouter/ionicUIRouter.js"></script>
   <link href="lib/ionic-material/dist/ionic.material.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=RobotoDraft%3A400%2C500%2C700%2C400italic" rel="stylesheet">
-
+  <link rel="stylesheet" href="lib/css-star-rating/dist/css/star-rating.css">
 
   <!-- Additional Styles -->
   <link href="css/style.css" rel="stylesheet">
 
-
-
+    
   <!--Firebase Header-->
   <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
   <script src="https://cdn.firebase.com/libs/angularfire/1.2.0/angularfire.min.js"></script>
 
   <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
   <script>
     //#2.  Initialize Firebase
     // Refer to #2 in the article
     var config = {
-	    apiKey: "API_KEY",
-	    authDomain: "AUTH_DOMAIN",
-	    databaseURL: "DB_URL",
-	    storageBucket: "",
-	    messagingSenderId: "SENDER_ID"
-	  };
+      apiKey: "AIzaSyBIt4LtaMaT3QefLWSmjU2YR6HymuIGhLI",
+      authDomain: "music-d6055.firebaseapp.com",
+      databaseURL: "https://music-d6055.firebaseio.com",
+      projectId: "music-d6055",
+      storageBucket: "music-d6055.appspot.com",
+      messagingSenderId: "528595755873"
+    };
     firebase.initializeApp(config);
   </script>
 
@@ -135,7 +136,10 @@
 
                     <ion-item data-componentid="list-item1" style="" menu-close="" ui-sref="topicsList" id="menu-list-item1" class="item-icon-left  ">
                         <i class="icon ion-ios-list-outline"></i>Subscribe List</ion-item>
-
+                    
+                    <ion-item data-componentid="list-item1" style="" menu-close="" ui-sref="topicsList" id="menu-list-item1" class="item-icon-left  ">
+                        <i class="icon ion-ios-pricetags-outline"></i>Buy Tickets</ion-item>
+                    
                     <ion-item data-componentid="list-item8" style="" menu-close="" ui-sref="compareAll" id="menu-list-item8" class="item-icon-left  ">
                         <i class="icon ion-stats-bars"></i>Compare All</ion-item>
 

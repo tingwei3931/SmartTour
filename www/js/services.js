@@ -2,8 +2,8 @@ angular.module('app.services', [])
 
 
 .factory('fireBaseData', function($firebase) {
-  var ref = new Firebase("https://mqtt-example.firebaseio.com/"),
-  refMqtt = new Firebase("https://mqtt-example.firebaseio.com/mqtt");
+  var ref = new Firebase("https://music-d6055.firebaseio.com"),
+  refMqtt = new Firebase("https://music-d6055.firebaseio.com/mqtt");
   return {
     ref: function() {
       return ref;

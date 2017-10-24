@@ -98,143 +98,208 @@ angular.module('app.controllers', [])
         sharedUtils.showAlert("Please note","Entered data is not valid");
       }
 
+    };
+
+  })
+
+
+  .controller('infoCtrl', function($scope,$rootScope,sharedUtils,$ionicSideMenuDelegate,
+                                     $state,fireBaseData,$ionicHistory, $stateParams, $http) {
+    $rootScope.extras = false; // For hiding the side bar and nav icon
+    $scope.item = $stateParams.item;
+    //Penang war museum, hill and ferry in order
+    var url_str =  {
+      'penang_war_museum' : 'https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJ3xaC-ru_SjARrMFeCiCAbvE&key=AIzaSyCrl_U2qlUb1X840QD9vl5O4wFP94k2g8c',
+      'penang_hill' : 'https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJQY55_XrCSjARE4XPYsmgG54&key=AIzaSyCrl_U2qlUb1X840QD9vl5O4wFP94k2g8c',
+      'penang_ferry_terminal': 'https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJxQWICRzESjARMnvDteVg8a4&key=AIzaSyCrl_U2qlUb1X840QD9vl5O4wFP94k2g8c'  
+    };
+    var headers = {
+      'Access-Control-Allow-Origin' : '*',
+      'Access-Control-Allow-Methods' : 'POST, GET, OPTIONS, PUT',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+    var place_url = "";
+    //Redirect to Info
+    if($scope.item.$id == "-Kx921hiYbFFuoT3UZ9R"){ //war museum
+      place_url = url_str.penang_war_museum;
+    }
+    else if($scope.item.$id == "-Kx8yYDTiqi0yWIMJ8Xw"){
+      place_url = url_str.penang_hill;
+    }
+    else if($scope.item.$id == "-Kx8vuYzuBtxaJoFSLTU"){
+      place_url = url_str.penang_ferry_terminal;
+    }
+    $http.get(place_url, {headers: headers})
+    .success(function(data) {
+        $scope.address = data.result.formatted_address;
+        $scope.phone_no = data.result.international_phone_number;
+        $scope.is_open = data.result.opening_hours.open_now ? "Open Now" : "Closed Now";
+        $scope.weekday_txt = data.result.opening_hours.weekday_text;
+        $scope.rating = data.result.rating;
+        $scope.gmap = data.result.url;
+        console.log($scope.address);
+        console.log($scope.phone_no);
+        console.log($scope.is_open);
+        console.log($scope.weekday_txt);
+        console.log($scope.rating);
+        console.log($scope.gmap);
+    })
+    .error(function(err) {
+        console.log(err);
+        alert("ERROR");
+    });
+    //redirect to google map via external browser
+    $scope.gotoMap = function(){
+      
     }
 
+    //returns the font color depending whether the location is open or not
+    $scope.getColor = function(is_open){
+      return is_open ? 'green' : 'red';
+    }
   })
 
   .controller('topicsCtrl', function($scope,$rootScope,$ionicSideMenuDelegate,
                                      fireBaseData,$state,$ionicPopup,$firebaseObject,
                                      $ionicHistory,$firebaseArray,sharedUtils) {
 
-    //Check if user already logged in
-    sharedUtils.showLoading();
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        $scope.user_info=user;
-        $scope.topics= $firebaseArray(fireBaseData.refMqtt().child(user.uid).child("topics"));
+      //Check if user already logged in
+      sharedUtils.showLoading();
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          $scope.user_info=user;
+          $scope.topics= $firebaseArray(fireBaseData.refMqtt().child(user.uid).child("topics"));
 
-        $scope.topics.$loaded().then(function(data) {   //Calls when the firebase data is loaded
+          $scope.topics.$loaded().then(function(data) {   //Calls when the firebase data is loaded
+            sharedUtils.hideLoading();
+          }, 500);
+
+        }else {
+
+          $ionicSideMenuDelegate.toggleLeft(); //To close the side bar
+          $ionicSideMenuDelegate.canDragContent(false);  // To remove the sidemenu white space
+
+          $ionicHistory.nextViewOptions({
+            historyRoot: true
+          });
+          $rootScope.extras = false;
           sharedUtils.hideLoading();
-        }, 500);
+          $state.go('tabsController.login', {}, {location: "replace"});
+          sharedUtils.hideLoading();
+        }
+      });
 
-      }else {
+      // On Loggin in to menu page, the sideMenu drag state is set to true
+      $ionicSideMenuDelegate.canDragContent(true);
+      $rootScope.extras=true;
 
-        $ionicSideMenuDelegate.toggleLeft(); //To close the side bar
-        $ionicSideMenuDelegate.canDragContent(false);  // To remove the sidemenu white space
+      // When user visits A-> B -> C -> A and clicks back, he will close the app instead of back linking
+      $scope.$on('$ionicView.enter', function(ev) {
+        if(ev.targetScope !== $scope){
+          $ionicHistory.clearHistory();
+          $ionicHistory.clearCache();
+        }
+      });
 
-        $ionicHistory.nextViewOptions({
-          historyRoot: true
-        });
-        $rootScope.extras = false;
-        sharedUtils.hideLoading();
-        $state.go('tabsController.login', {}, {location: "replace"});
-        sharedUtils.hideLoading();
-      }
-    });
+      //redirect to info 
+      $scope.itemInfo = function(edit_val){
+        console.log(edit_val);
+        $state.go('info', {'item' : edit_val}, {location: "replace"});
+      };
 
-    // On Loggin in to menu page, the sideMenu drag state is set to true
-    $ionicSideMenuDelegate.canDragContent(true);
-    $rootScope.extras=true;
+      //Submit estimated head count
+      $scope.submitHeadCount = function(edit_val) {  
+        var title,sub_title;
+        if(edit_val!=null) {
+          $scope.data=null;
+          $scope.data = edit_val; // For editing address
+          title="Report Estimated Head Count";
+          sub_title="Give a range";
+                // An elaborate, custom popup
+          var connectionPopup = $ionicPopup.show({
+            template: '<input type="text"   placeholder="Min"  ng-model="data.rangeMin"> <br/> ' +
+                      '<input type="text"   placeholder="Max" ng-model="data.rangeMax"> <br/> ',
+            title: title,
+            subTitle: sub_title,
+            scope: $scope,
+            buttons: [
+              { text: 'Close' },
+              {
+                text: '<b>Save</b>',
+                type: 'button-positive',
+                onTap: function(e) {
+                  if ( !$scope.data.topic || !$scope.data.info  ) {
+                    e.preventDefault(); //don't allow the user to close unless he enters full details
+                  } else {
+                    fireBaseData.refMqtt().child($scope.user_info.uid).child("topics").child(edit_val.$id).update({    // set
+                      rangeMax: $scope.data.rangeMax,
+                      rangeMin: $scope.data.rangeMin
+                      
+                    });
+                    return $scope.data;
+                  }
+                }
+              }
+            ]
+          });
+        }
+      };
 
-    // When user visits A-> B -> C -> A and clicks back, he will close the app instead of back linking
-    $scope.$on('$ionicView.enter', function(ev) {
-      if(ev.targetScope !== $scope){
-        $ionicHistory.clearHistory();
-        $ionicHistory.clearCache();
-      }
-    });
-
-    //Edit section
-    $scope.itemManipulation = function(edit_val) {  // Takes care of item add and edit ie Item Manipulator
-      var title,sub_title;
-      if(edit_val!=null) {
-        $scope.data=null;
-        $scope.data = edit_val; // For editing address
-        title="Edit Topic";
-        sub_title="Edit your Topic";
-      }
-      else {
+      //Add places of interest
+      $scope.addPlaces = function(){
         $scope.data = {};    // For adding new address
         title="Add Topic";
         sub_title="Add a new topic";
-      }
-      // An elaborate, custom popup
-      var connectionPopup = $ionicPopup.show({
-        template: '<input type="text"   placeholder="Topic"  ng-model="data.topic"> <br/> ' +
-                  '<input type="text"   placeholder="Info" ng-model="data.info"> <br/> '+
-                  '<input type="text"   placeholder="Image (Optional)"  ng-model="data.img"> <br/> ',
-        title: title,
-        subTitle: sub_title,
-        scope: $scope,
-        buttons: [
-          { text: 'Close' },
-          {
-            text: '<b>Save</b>',
-            type: 'button-positive',
-            onTap: function(e) {
-              if ( !$scope.data.topic || !$scope.data.info  ) {
-                e.preventDefault(); //don't allow the user to close unless he enters full details
-              } else {
-                return $scope.data;
+              // An elaborate, custom popup
+        var connectionPopup = $ionicPopup.show({
+          template: '<input type="text"   placeholder="Topic"  ng-model="data.topic"> <br/> ' +
+                    '<input type="text"   placeholder="Info" ng-model="data.info"> <br/> '+
+                    '<input type="text"   placeholder="Image (Optional)"  ng-model="data.img"> <br/> ',
+          title: title,
+          subTitle: sub_title,
+          scope: $scope,
+          buttons: [
+            { text: 'Close' },
+            {
+              text: '<b>Save</b>',
+              type: 'button-positive',
+              onTap: function(e) {
+                if ( !$scope.data.topic || !$scope.data.info  ) {
+                  e.preventDefault(); //don't allow the user to close unless he enters full details
+                } else {
+                  return $scope.data;
+                }
               }
             }
+          ]
+        });
+      };
+
+      // A confirm dialog for deleting topic
+      $scope.deleteTopic = function(del_id) {
+        var confirmPopup = $ionicPopup.confirm({
+          title: 'Delete Topic',
+          template: 'Are you sure you want to delete this topic',
+          buttons: [
+            { text: 'No' , type: 'button-stable' },
+            { text: 'Yes', type: 'button-assertive' , onTap: function(){return del_id;} }
+          ]
+        });
+
+        confirmPopup.then(function(res) {
+          if(res) {
+            fireBaseData.refMqtt().child($scope.user_info.uid).child("topics").child(res).remove();
           }
-        ]
-      });
+        });
+      };
 
-      connectionPopup.then(function(res) {
-
-        if(edit_val!=null) {
-          //Update  address
-          if(res!=null) { //res == null => close()
-            if(!res.img){ res.img="topic_bg_default.jpg";  }
-            fireBaseData.refMqtt().child($scope.user_info.uid).child("topics").child(edit_val.$id).update({    // set
-              topic: res.topic,
-              info: res.info,
-              img:res.img
-            });
-          }
-        }else{
-          //Add new address
-          if(res!=null) {
-            if (!res.img) {res.img = "topic_bg_default.jpg";}
-            fireBaseData.refMqtt().child($scope.user_info.uid).child("topics").push({    // set
-              topic: res.topic,
-              info: res.info,
-              img: res.img
-            });
-          }
-        }
-
-      });
-
+      $scope.view_graph=function(c_id){
+        fireBaseData.refMqtt().child($scope.user_info.uid).update({ currentTopic: c_id }); //set the current topic
+        $state.go('graph', {}, {location: "replace"}); //move to graph page
     };
-
-    // A confirm dialog for deleting topic
-    $scope.deleteTopic = function(del_id) {
-      var confirmPopup = $ionicPopup.confirm({
-        title: 'Delete Topic',
-        template: 'Are you sure you want to delete this topic',
-        buttons: [
-          { text: 'No' , type: 'button-stable' },
-          { text: 'Yes', type: 'button-assertive' , onTap: function(){return del_id;} }
-        ]
-      });
-
-      confirmPopup.then(function(res) {
-        if(res) {
-          fireBaseData.refMqtt().child($scope.user_info.uid).child("topics").child(res).remove();
-        }
-      });
-    };
-
-    $scope.view_graph=function(c_id){
-      fireBaseData.refMqtt().child($scope.user_info.uid).update({ currentTopic: c_id }); //set the current topic
-      $state.go('graph', {}, {location: "replace"}); //move to graph page
-    };
-
   })
-
+  
   .controller('indexCtrl', function($scope,$rootScope,sharedUtils,$ionicHistory,$state,$ionicSideMenuDelegate) {
 
     //Check if user already logged in

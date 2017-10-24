@@ -1,4 +1,12 @@
 {
   "name": "pulse",
-  "app_id": "54ae36d9"
+  "app_id": "55582dbe",
+  "integrations": {},
+  "type": "ionic1",
+  "watchPatterns": [
+    "scss/**/*",
+    "www/**/*",
+    "!www/lib/**/*",
+    "!www/**/*.map"
+  ]
 }

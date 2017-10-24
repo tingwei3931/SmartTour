@@ -1,16 +1,17 @@
-<ion-view style="" class=" " id="page9" title="Topics">
+<ion-view style="" class=" " id="page9" title="Places of Interest">
     <ion-content class="has-header" padding="false">
 
         <div ng-repeat="item in topics" style=" margin-bottom: 0;" class="list condensed-space no-padding">
 
           <div class="card dark-bg in" >
-            <a class="item clear-bg item-bg-image waves-effect waves-button waves-light has-mask-reverse">
+            <a class="item clear-bg item-bg-image waves-button waves-light">
               <h2>{{item.topic}}</h2>
+              </br>
               <p>{{item.info}}</p>
               <div class="button-bar" style="bottom: 0;position: absolute;right: 0;">
-                <button ng-click="deleteTopic(item.$id)" class="button button-large button-clear flat waves-effect waves-button waves-light icon ion-android-delete pull-right text-white"></button>
-                <button ng-click="itemManipulation(item)" class="button button-large button-clear flat waves-effect waves-button waves-light icon ion-ios-compose pull-right text-white"></button>
-                <button ng-click="view_graph(item.topic)" class="button button-large button-clear flat waves-effect waves-button waves-light icon ion-ios-eye pull-right text-white"></button>
+                <button ng-click="itemInfo(item)" style="color:white;" class="button button-clear flat waves-effect waves-button waves-light icon ion-ios-information pull-right text-white"> INFO</button>
+                <button ng-click="submitHeadCount(item)" style="color:white;" class="button button-clear flat waves-effect waves-button waves-light icon ion-clipboard pull-right text-white"> REPORT</button>
+                <button ng-click="view_graph(item.topic)" style="color:white;" class="button button-clear flat waves-effect waves-button waves-light icon ion-ios-clock pull-right text-white"> TIME</button>
               </div>
               <img ng-src="{{&apos;img/&apos;+ item.img +&apos;&apos;}}"   >
             </a>
@@ -20,6 +21,6 @@
 
     </ion-content>
 
-  <button ng-click="itemManipulation()" class="button button-fab button-fab-bottom-right button-calm icon ion-plus waves-effect waves-button waves-light"></button>
+  <button ng-click="addPlaces()" class="button button-fab button-fab-bottom-right button-calm icon ion-plus waves-effect waves-button waves-light"></button>
 
 </ion-view>

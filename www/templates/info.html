@@ -1,0 +1,89 @@
+<ion-view style="" class=" " id="page10" title="{{item.topic}} Info">
+    <ion-content class="has-header" padding="false">
+
+
+        <div class="list card">
+              <div class="item item-avatar">
+                <img src="img/{{item.img}}">
+                <h2>{{item.topic}}</h2>
+                <p ng-style="{'color': getColor({{is_open}})}">{{is_open}}</p>
+              </div>
+
+              <div class="item">
+                <img class="full-image" src="img/{{item.img}}">
+              </div>
+
+              <div class="card">
+                <div class="item item-divider">
+                    Address
+                </div>
+                <div class="item item-text-wrap">
+                        {{address}}
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="item item-divider">
+                      <i class="icon ion-ios-telephone"></i>  Contact No
+                </div>
+                <div class="item item-text-wrap">
+                        {{phone_no}}
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="item item-divider">
+                    Opening Days
+                </div>
+                <div class="item">
+                    <p ng-repeat="weekday in weekday_txt">
+                            {{weekday}}</p>
+                </div>
+              </div>
+            <div class="card">
+                <div class="item item-divider">
+                    Rating
+                    </div>
+                    <div class="rating large star-icon direction-rtl value-{{rating | number:0}} half color-ok label-right">
+                            <div class="label-value">{{rating}}</div>
+                                <div class="star-container">
+                                    <div class="star">
+                                        <i class="star-empty"></i>
+                                        <i class="star-half"></i>
+                                        <i class="star-filled"></i>
+                                    </div>
+                                    <div class="star">
+                                        <i class="star-empty"></i>
+                                        <i class="star-half"></i>
+                                        <i class="star-filled"></i>
+                                    </div>
+                                    <div class="star">
+                                        <i class="star-empty"></i>
+                                        <i class="star-half"></i>
+                                        <i class="star-filled"></i>
+                                    </div>
+                                    <div class="star">
+                                    <i class="star-empty"></i>
+                                    <i class="star-half"></i>
+                                    <i class="star-filled"></i>
+                                </div>
+                                    <div class="star">
+                                    <i class="star-empty"></i>
+                                    <i class="star-half"></i>
+                                    <i class="star-filled"></i>
+                                </div>
+                                </div>
+                            </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <a href="{{gmap}}" class="button button-positive">
+                        <i class="icon ion-map"></i> Get Directions From Google
+                    </a>  
+                </div>
+            </div>
+    
+            </div>
+    </ion-content>
+
+</ion-view>

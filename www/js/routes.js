@@ -24,6 +24,13 @@ angular.module('app.routes', [])
     }
   })
 
+  .state('info', {
+    url: '/page10',
+    templateUrl: 'templates/info.html',
+    controller: 'infoCtrl',
+    params: {'item': null}
+  })
+
   .state('tabsController.signup', {
     url: '/page6',
     views: {
