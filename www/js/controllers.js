@@ -121,7 +121,7 @@ angular.module('app.controllers', [])
     };
     var place_url = "";
     //Redirect to Info
-    if($scope.item.$id == "-Kx921hiYbFFuoT3UZ9R"){ //war museum
+    if($scope.item.$id == "-Kx921hiYbFFuoT3UZ9R"){
       place_url = url_str.penang_war_museum;
     }
     else if($scope.item.$id == "-Kx8yYDTiqi0yWIMJ8Xw"){
@@ -135,12 +135,14 @@ angular.module('app.controllers', [])
         $scope.address = data.result.formatted_address;
         $scope.phone_no = data.result.international_phone_number;
         $scope.is_open = data.result.opening_hours.open_now ? "Open Now" : "Closed Now";
+        $scope.is_open_class = data.result.opening_hours.open_now ? "green" : "red";
         $scope.weekday_txt = data.result.opening_hours.weekday_text;
-        $scope.rating = data.result.rating;
+        $scope.rating = Math.floor(parseFloat(data.result.rating));
         $scope.gmap = data.result.url;
         console.log($scope.address);
         console.log($scope.phone_no);
         console.log($scope.is_open);
+        console.log($scope.is_open_class);
         console.log($scope.weekday_txt);
         console.log($scope.rating);
         console.log($scope.gmap);
@@ -149,14 +151,10 @@ angular.module('app.controllers', [])
         console.log(err);
         alert("ERROR");
     });
+
     //redirect to google map via external browser
     $scope.gotoMap = function(){
       
-    }
-
-    //returns the font color depending whether the location is open or not
-    $scope.getColor = function(is_open){
-      return is_open ? 'green' : 'red';
     }
   })
 
@@ -413,6 +411,7 @@ angular.module('app.controllers', [])
 
     sharedUtils.showLoading(); // starts with loading bar
 
+
     /*--------------------------------FIREBASE---------------------------*/
     $rootScope.extras=true;
     //var mqttData;
@@ -497,9 +496,8 @@ angular.module('app.controllers', [])
 
 
 
-
-    /*--------------------------------GRAPH---------------------------*/
-
+  
+    /**--------------------------------GRAPH---------------------------*/
     var ISTOffset = 330;   // IST offset UTC +5:30
 
     var options = {
@@ -544,7 +542,7 @@ angular.module('app.controllers', [])
               for (i = -19; i <= 0; i += 1) {
                 data.push({
                   x: time + i * 1000,
-                  y: null
+                  y: 
                 });
               }
               return data;
@@ -570,10 +568,10 @@ angular.module('app.controllers', [])
       message.destinationName = mqttData.currentTopic;
       client.send(message);
     };
-
   });
-
+ 
     /*--------------------------------END OF GRAPH---------------------------*/
+ 
 
 
 

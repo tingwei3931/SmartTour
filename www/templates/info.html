@@ -6,7 +6,7 @@
               <div class="item item-avatar">
                 <img src="img/{{item.img}}">
                 <h2>{{item.topic}}</h2>
-                <p ng-style="{'color': getColor({{is_open}})}">{{is_open}}</p>
+                <p ng-style="{'color': is_open_class }">{{is_open}}</p>
               </div>
 
               <div class="item">
@@ -15,7 +15,7 @@
 
               <div class="card">
                 <div class="item item-divider">
-                    Address
+                    <i class="icon ion-location"></i> Address
                 </div>
                 <div class="item item-text-wrap">
                         {{address}}
@@ -44,7 +44,7 @@
                 <div class="item item-divider">
                     Rating
                     </div>
-                    <div class="rating large star-icon direction-rtl value-{{rating | number:0}} half color-ok label-right">
+                    <div class="rating large star-icon direction-ltr value-{{rating}} color-ok label-left">
                             <div class="label-value">{{rating}}</div>
                                 <div class="star-container">
                                     <div class="star">

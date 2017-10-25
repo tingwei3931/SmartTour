@@ -6,7 +6,7 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives',
-                       'firebase'])
+                       'firebase', 'chart.js'])
 .config(function($ionicConfigProvider) {
     //Added config
     //$ionicConfigProvider.views.maxCache(5);
